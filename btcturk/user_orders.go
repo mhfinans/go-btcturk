@@ -10,7 +10,7 @@ import (
 )
 
 type OpenOrderModel struct {
-	ID                   int             `json:"id"`
+	ID                   int64           `json:"id"`
 	Price                string          `json:"price"`
 	Amount               string          `json:"amount"`
 	Quantity             string          `json:"quantity"`
@@ -20,7 +20,7 @@ type OpenOrderModel struct {
 	Type                 SideType        `json:"type"`
 	Method               OrderType       `json:"method"`
 	OrderClientID        string          `json:"orderClientId"`
-	Time                 int             `json:"time"`
+	Time                 int64           `json:"time"`
 	UpdateTime           int64           `json:"updateTime"`
 	Status               OrderStatusType `json:"status"`
 	LeftAmount           string          `json:"leftAmount"`
@@ -32,7 +32,7 @@ type OpenOrderResult struct {
 }
 
 type OrderResult struct {
-	ID                   int             `json:"id"`
+	ID                   int64           `json:"id"`
 	Price                string          `json:"price"`
 	Amount               string          `json:"amount"`
 	Quantity             string          `json:"quantity"`
@@ -114,8 +114,14 @@ func (c *Client) AllOrders() (OrderResult, error) {
 	}
 
 	defer func() {
-		io.Copy(ioutil.Discard, resp.Body)
-		resp.Body.Close()
+		_, err := io.Copy(ioutil.Discard, resp.Body)
+		if err != nil {
+			return
+		}
+		err = resp.Body.Close()
+		if err != nil {
+			return
+		}
 		c.clearRequest()
 	}()
 
@@ -142,8 +148,14 @@ func (c *Client) CancelOrder() (bool, error) {
 	}
 
 	defer func() {
-		io.Copy(ioutil.Discard, resp.Body)
-		resp.Body.Close()
+		_, err := io.Copy(ioutil.Discard, resp.Body)
+		if err != nil {
+			return
+		}
+		err = resp.Body.Close()
+		if err != nil {
+			return
+		}
 		c.clearRequest()
 	}()
 

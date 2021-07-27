@@ -2,11 +2,11 @@ package btcturk
 
 import "fmt"
 
-// https://docs.btcturk.com/#ticker
+// Ticker https://docs.btcturk.com/#ticker
 type Ticker struct {
 	Pair              string  `json:"pair"`
 	PairNormalized    string  `json:"pairNormalized"`
-	Timestamp         float64 `json:"timestamp"`
+	Timestamp         int64   `json:"timestamp"`
 	Last              float64 `json:"last"`
 	High              float64 `json:"high"`
 	Low               float64 `json:"low"`
@@ -21,7 +21,7 @@ type Ticker struct {
 	NumeratorSymbol   string  `json:"numeratorSymbol"`
 }
 
-// If pairSymbol is not set, ticker for all pairs will be returned in a json array.
+// Ticker If pairSymbol is not set, ticker for all pairs will be returned in a json array.
 // Or
 // GET ?pairSymbol=BTC_TRY
 // Or

@@ -6,10 +6,10 @@ import (
 )
 
 // Limit Transactions, AllOrders
-func (c *Client) Limit(v int) *Client { return c.addParamInt("limit", v) }
+func (c *Client) Limit(v int64) *Client { return c.addParamInt("limit", v) }
 
 // Offset Transactions
-func (c *Client) Offset(v int) *Client { return c.addParamInt("offset", v) }
+func (c *Client) Offset(v int64) *Client { return c.addParamInt("offset", v) }
 
 // Sort Transactions
 func (c *Client) Sort(v string) *Client {
@@ -18,19 +18,19 @@ func (c *Client) Sort(v string) *Client {
 }
 
 // OrderID Cancel
-func (c *Client) OrderID(v int) *Client { return c.addParamInt("id", v) }
+func (c *Client) OrderID(v int64) *Client { return c.addParamInt("id", v) }
 
 // FromOrderId AllOrders
-func (c *Client) FromOrderId(v int) *Client { return c.addParamInt("orderId", v) }
+func (c *Client) FromOrderId(v int64) *Client { return c.addParamInt("orderId", v) }
 
 // StartTime AllOrders
-func (c *Client) StartTime(v int) *Client { return c.addParamInt("startTime", v) }
+func (c *Client) StartTime(v int64) *Client { return c.addParamInt("startTime", v) }
 
 // EndTime AllOrders
-func (c *Client) EndTime(v int) *Client { return c.addParamInt("endTime", v) }
+func (c *Client) EndTime(v int64) *Client { return c.addParamInt("endTime", v) }
 
 // Page AllOrders
-func (c *Client) Page(v int) *Client { return c.addParamInt("page", v) }
+func (c *Client) Page(v int64) *Client { return c.addParamInt("page", v) }
 
 // Quantity Buy or Sell
 func (c *Client) Quantity(v float64) *Client { return c.addParamFloat("quantity", v) }
@@ -59,14 +59,14 @@ func (c *Client) PairSymbol(v string) *Client {
 	return c
 }
 
-// Custom Param
+// AddCustomParam Custom Param
 func (c *Client) AddCustomParam(k string, v string) *Client {
 	c.params.Add(k, v)
 	return c
 }
 
-func (c *Client) addParamInt(key string, value int) *Client {
-	c.params.Add(key, strconv.Itoa(value))
+func (c *Client) addParamInt(key string, value int64) *Client {
+	c.params.Add(key, strconv.FormatInt(value, 10))
 	return c
 }
 

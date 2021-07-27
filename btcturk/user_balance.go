@@ -1,6 +1,6 @@
 package btcturk
 
-// https://docs.btcturk.com/#account-balance
+// Balance https://docs.btcturk.com/#account-balance
 type Balance struct {
 	Asset     string `json:"asset"`
 	AssetName string `json:"assetname"`
@@ -9,7 +9,7 @@ type Balance struct {
 	Free      string `json:"free"`
 }
 
-// Returns User's Balance
+// Balance Returns User's Balance
 func (c *Client) Balance() ([]Balance, error) {
 	req, err := c.newRequest("GET", "/api/v1/users/balances", nil)
 	if err != nil {

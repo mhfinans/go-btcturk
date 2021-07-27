@@ -47,7 +47,7 @@ type Client struct {
 type GeneralResponse struct {
 	Success bool        `json:"success"`
 	Message *string     `json:"message"`
-	Code    int         `json:"code"`
+	Code    int64       `json:"code"`
 	Data    interface{} `json:"data"`
 }
 
@@ -93,8 +93,14 @@ func (c *Client) do(r *http.Request, v interface{}) (*http.Response, error) {
 	}
 
 	defer func() {
-		io.Copy(ioutil.Discard, resp.Body)
-		resp.Body.Close()
+		_, err := io.Copy(ioutil.Discard, resp.Body)
+		if err != nil {
+			return
+		}
+		err = resp.Body.Close()
+		if err != nil {
+			return
+		}
 		c.clearRequest()
 	}()
 

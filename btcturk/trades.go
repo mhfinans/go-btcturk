@@ -2,20 +2,20 @@ package btcturk
 
 import "fmt"
 
-// https://docs.btcturk.com/#trades
+// Trade https://docs.btcturk.com/#trades
 type Trade struct {
-	Pair           string  `json:"pair"`
-	PairNormalized string  `json:"pairNormalized"`
-	Numerator      string  `json:"numerator"`
-	Denominator    string  `json:"denominator"`
-	TimeStamp      float64 `json:"date"`
-	TID            string  `json:"tid"`
-	Price          string  `json:"price"`
-	Amount         string  `json:"amount"`
-	Side           string  `json:"side"`
+	Pair           string `json:"pair"`
+	PairNormalized string `json:"pairNormalized"`
+	Numerator      string `json:"numerator"`
+	Denominator    string `json:"denominator"`
+	TimeStamp      int64  `json:"date"`
+	TID            string `json:"tid"`
+	Price          string `json:"price"`
+	Amount         string `json:"amount"`
+	Side           string `json:"side"`
 }
 
-// GET ?pairSymbol=BTC_TRY
+// Trades GET ?pairSymbol=BTC_TRY
 // or
 // GET ?pairSymbol=BTC_TRY&last=COUNT (Max. value for count parameter is 50)
 func (c *Client) Trades() ([]Trade, error) {
