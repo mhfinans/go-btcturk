@@ -99,18 +99,18 @@ func (c *Client) OpenOrders() (OpenOrderResult, error) {
 	return response, nil
 }
 
-func (c *Client) AllOrders() (OrderResult, error) {
+func (c *Client) AllOrders() ([]OrderResult, error) {
 	req, err := c.newRequest("GET", fmt.Sprintf("/api/v1/allOrders?%s", c.params.Encode()), c.body)
 	if err != nil {
-		return OrderResult{}, err
+		return make([]OrderResult, 0), err
 	}
 	if err := c.auth(req); err != nil {
-		return OrderResult{}, err
+		return make([]OrderResult, 0), err
 	}
 
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return OrderResult{}, err
+		return make([]OrderResult, 0), err
 	}
 
 	defer func() {
@@ -125,9 +125,9 @@ func (c *Client) AllOrders() (OrderResult, error) {
 		c.clearRequest()
 	}()
 
-	var response OrderResult
+	var response []OrderResult
 	if _, err = c.do(req, &response); err != nil {
-		return OrderResult{}, err
+		return make([]OrderResult, 0), err
 	}
 
 	return response, nil
