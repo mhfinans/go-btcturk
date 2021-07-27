@@ -17,6 +17,24 @@ import (
 
 const baseURL = "https://api.btcturk.com"
 
+type OrderType string
+type SideType string
+type OrderStatusType string
+
+const (
+	OrderTypeMarket    OrderType = "market"
+	OrderTypeLimit     OrderType = "limit"
+	OrderTypeStopLimit OrderType = "stoplimit"
+
+	OrderStatusTypeUntouched       OrderStatusType = "Untouched"
+	OrderStatusTypePartiallyFilled OrderStatusType = "Partial"
+	OrderStatusTypeCancelled       OrderStatusType = "Canceled"
+	OrderStatusTypeFilled          OrderStatusType = "Filled"
+
+	SideTypeBuy  SideType = "buy"
+	SideTypeSell SideType = "sell"
+)
+
 type Client struct {
 	client  *http.Client
 	baseURL *url.URL

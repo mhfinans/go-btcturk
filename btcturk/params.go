@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-// Limit Transactions
+// Limit Transactions, AllOrders
 func (c *Client) Limit(v int) *Client { return c.addParamInt("limit", v) }
 
 // Offset Transactions
@@ -19,6 +19,18 @@ func (c *Client) Sort(v string) *Client {
 
 // OrderID Cancel
 func (c *Client) OrderID(v int) *Client { return c.addParamInt("id", v) }
+
+// FromOrderId AllOrders
+func (c *Client) FromOrderId(v int) *Client { return c.addParamInt("orderId", v) }
+
+// StartTime AllOrders
+func (c *Client) StartTime(v int) *Client { return c.addParamInt("startTime", v) }
+
+// EndTime AllOrders
+func (c *Client) EndTime(v int) *Client { return c.addParamInt("endTime", v) }
+
+// Page AllOrders
+func (c *Client) Page(v int) *Client { return c.addParamInt("page", v) }
 
 // Quantity Buy or Sell
 func (c *Client) Quantity(v float64) *Client { return c.addParamFloat("quantity", v) }
