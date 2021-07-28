@@ -26,6 +26,19 @@ type OrderResponse struct {
 	LeftAmount           string          `json:"leftAmount"`
 }
 
+type NewOrderResponse struct {
+	ID                   int64     `json:"id"`
+	Quantity             string    `json:"quantity"`
+	Price                string    `json:"price"`
+	StopPrice            string    `json:"stopPrice"`
+	NewOrderClientID     string    `json:"newOrderClientId"`
+	Type                 SideType  `json:"type"`
+	Method               OrderType `json:"method"`
+	PairSymbol           string    `json:"pairSymbol"`
+	PairSymbolNormalized string    `json:"pairSymbolNormalized"`
+	Datetime             int64     `json:"datetime"`
+}
+
 type OpenOrderResult struct {
 	Asks []OrderResponse `json:"asks"`
 	Bids []OrderResponse `json:"bids"`
@@ -41,23 +54,23 @@ type OrderInput struct {
 	PairSymbol       string    `json:"pairSymbol"`
 }
 
-func (c *Client) NewOrder(o *OrderInput) (OrderResponse, error) {
+func (c *Client) NewOrder(o *OrderInput) (NewOrderResponse, error) {
 	jsonString, err := json.Marshal(o)
 	if err != nil {
-		return OrderResponse{}, err
+		return NewOrderResponse{}, err
 	}
 
 	req, err := c.newRequest("POST", "/api/v1/order", bytes.NewBuffer(jsonString))
 	if err != nil {
-		return OrderResponse{}, err
+		return NewOrderResponse{}, err
 	}
 	if err := c.auth(req); err != nil {
-		return OrderResponse{}, err
+		return NewOrderResponse{}, err
 	}
 
-	var response OrderResponse
+	var response NewOrderResponse
 	if _, err = c.do(req, &response); err != nil {
-		return OrderResponse{}, err
+		return NewOrderResponse{}, err
 	}
 
 	return response, nil
