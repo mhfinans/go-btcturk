@@ -9,14 +9,14 @@ import (
 	"io/ioutil"
 )
 
-type OpenOrderModel struct {
+type OrderResponse struct {
 	ID                   int64           `json:"id"`
 	Price                string          `json:"price"`
 	Amount               string          `json:"amount"`
 	Quantity             string          `json:"quantity"`
 	StopPrice            string          `json:"stopPrice"`
-	PairSymbol           string          `json:"pairSymbol"`
-	PairSymbolNormalized string          `json:"pairSymbolNormalized"`
+	PairSymbol           string          `json:"pairsymbol"`
+	PairSymbolNormalized string          `json:"pairsymbolnormalized"`
 	Type                 SideType        `json:"type"`
 	Method               OrderType       `json:"method"`
 	OrderClientID        string          `json:"orderClientId"`
@@ -27,23 +27,8 @@ type OpenOrderModel struct {
 }
 
 type OpenOrderResult struct {
-	Asks []OpenOrderModel `json:"asks"`
-	Bids []OpenOrderModel `json:"bids"`
-}
-
-type OrderResult struct {
-	ID                   int64           `json:"id"`
-	Price                string          `json:"price"`
-	Amount               string          `json:"amount"`
-	Quantity             string          `json:"quantity"`
-	PairSymbol           string          `json:"pairsymbol"`
-	PairSymbolNormalized string          `json:"pairsymbolnormalized"`
-	Type                 SideType        `json:"type"`
-	Method               OrderType       `json:"method"`
-	OrderClientID        string          `json:"orderClientId"`
-	Time                 int64           `json:"time"`
-	UpdateTime           int64           `json:"updateTime"`
-	Status               OrderStatusType `json:"status"`
+	Asks []OrderResponse `json:"asks"`
+	Bids []OrderResponse `json:"bids"`
 }
 
 type OrderInput struct {
@@ -56,23 +41,23 @@ type OrderInput struct {
 	PairSymbol       string    `json:"pairSymbol"`
 }
 
-func (c *Client) NewOrder(o *OrderInput) (OrderResult, error) {
+func (c *Client) NewOrder(o *OrderInput) (OrderResponse, error) {
 	jsonString, err := json.Marshal(o)
 	if err != nil {
-		return OrderResult{}, err
+		return OrderResponse{}, err
 	}
 
 	req, err := c.newRequest("POST", "/api/v1/order", bytes.NewBuffer(jsonString))
 	if err != nil {
-		return OrderResult{}, err
+		return OrderResponse{}, err
 	}
 	if err := c.auth(req); err != nil {
-		return OrderResult{}, err
+		return OrderResponse{}, err
 	}
 
-	var response OrderResult
+	var response OrderResponse
 	if _, err = c.do(req, &response); err != nil {
-		return OrderResult{}, err
+		return OrderResponse{}, err
 	}
 
 	return response, nil
@@ -99,35 +84,18 @@ func (c *Client) OpenOrders() (OpenOrderResult, error) {
 	return response, nil
 }
 
-func (c *Client) AllOrders() ([]OrderResult, error) {
+func (c *Client) AllOrders() ([]OrderResponse, error) {
 	req, err := c.newRequest("GET", fmt.Sprintf("/api/v1/allOrders?%s", c.params.Encode()), c.body)
 	if err != nil {
-		return make([]OrderResult, 0), err
+		return make([]OrderResponse, 0), err
 	}
 	if err := c.auth(req); err != nil {
-		return make([]OrderResult, 0), err
+		return make([]OrderResponse, 0), err
 	}
 
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return make([]OrderResult, 0), err
-	}
-
-	defer func() {
-		_, err := io.Copy(ioutil.Discard, resp.Body)
-		if err != nil {
-			return
-		}
-		err = resp.Body.Close()
-		if err != nil {
-			return
-		}
-		c.clearRequest()
-	}()
-
-	var response []OrderResult
+	var response []OrderResponse
 	if _, err = c.do(req, &response); err != nil {
-		return make([]OrderResult, 0), err
+		return make([]OrderResponse, 0), err
 	}
 
 	return response, nil
