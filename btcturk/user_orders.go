@@ -3,7 +3,6 @@ package btcturk
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 )
 
@@ -127,11 +126,7 @@ func (c *Client) CancelOrder() (bool, error) {
 
 	if _, err = c.do(req, &response); err != nil {
 		return false, err
-	}
-
-	if response.Success == true {
-		return true, nil
 	} else {
-		return false, errors.New(*response.Message)
+		return true, nil
 	}
 }
