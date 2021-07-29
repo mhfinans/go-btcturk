@@ -28,12 +28,15 @@ type Ticker struct {
 // GET ?symbol=USDT
 func (c *Client) Ticker() ([]Ticker, error) {
 	req, err := c.newRequest("GET", fmt.Sprintf("/api/v2/ticker?%s", c.params.Encode()), nil)
+
 	if err != nil {
-		return []Ticker{}, err
+		return nil, err
 	}
+
 	var response []Ticker
 	if _, err = c.do(req, &response); err != nil {
-		return []Ticker{}, err
+		return nil, err
 	}
+
 	return response, nil
 }

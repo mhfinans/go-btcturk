@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"io/ioutil"
 )
 
 type OrderResponse struct {
@@ -54,61 +52,63 @@ type OrderInput struct {
 	PairSymbol       string    `json:"pairSymbol"`
 }
 
-func (c *Client) NewOrder(o *OrderInput) (NewOrderResponse, error) {
+func (c *Client) NewOrder(o *OrderInput) (*NewOrderResponse, error) {
 	jsonString, err := json.Marshal(o)
 	if err != nil {
-		return NewOrderResponse{}, err
+		return nil, err
 	}
 
 	req, err := c.newRequest("POST", "/api/v1/order", bytes.NewBuffer(jsonString))
 	if err != nil {
-		return NewOrderResponse{}, err
+		return nil, err
 	}
 	if err := c.auth(req); err != nil {
-		return NewOrderResponse{}, err
+		return nil, err
 	}
 
 	var response NewOrderResponse
 	if _, err = c.do(req, &response); err != nil {
-		return NewOrderResponse{}, err
+		return nil, err
 	}
 
-	return response, nil
+	return &response, nil
 }
 
-func (c *Client) OpenOrders() (OpenOrderResult, error) {
+func (c *Client) OpenOrders() (*OpenOrderResult, error) {
 	jsonString, err := json.Marshal(c.params)
 	if err != nil {
-		return OpenOrderResult{}, err
+		return nil, err
 	}
+
 	req, err := c.newRequest("GET", "/api/v1/openOrders", bytes.NewBuffer(jsonString))
 	if err != nil {
-		return OpenOrderResult{}, err
+		return nil, err
 	}
+
 	if err := c.auth(req); err != nil {
-		return OpenOrderResult{}, err
+		return nil, err
 	}
 
 	var response OpenOrderResult
 	if _, err = c.do(req, &response); err != nil {
-		return OpenOrderResult{}, err
+		return nil, err
 	}
 
-	return response, nil
+	return &response, nil
 }
 
 func (c *Client) AllOrders() ([]OrderResponse, error) {
 	req, err := c.newRequest("GET", fmt.Sprintf("/api/v1/allOrders?%s", c.params.Encode()), c.body)
 	if err != nil {
-		return make([]OrderResponse, 0), err
+		return nil, err
 	}
 	if err := c.auth(req); err != nil {
-		return make([]OrderResponse, 0), err
+		return nil, err
 	}
 
 	var response []OrderResponse
 	if _, err = c.do(req, &response); err != nil {
-		return make([]OrderResponse, 0), err
+		return nil, err
 	}
 
 	return response, nil
@@ -123,26 +123,9 @@ func (c *Client) CancelOrder() (bool, error) {
 		return false, err
 	}
 
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return false, err
-	}
-
-	defer func() {
-		_, err := io.Copy(ioutil.Discard, resp.Body)
-		if err != nil {
-			return
-		}
-		err = resp.Body.Close()
-		if err != nil {
-			return
-		}
-		c.clearRequest()
-	}()
-
 	var response = &GeneralResponse{}
 
-	if json.NewDecoder(resp.Body).Decode(response) != nil {
+	if _, err = c.do(req, &response); err != nil {
 		return false, err
 	}
 

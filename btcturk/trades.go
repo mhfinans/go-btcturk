@@ -20,12 +20,14 @@ type Trade struct {
 // GET ?pairSymbol=BTC_TRY&last=COUNT (Max. value for count parameter is 50)
 func (c *Client) Trades() ([]Trade, error) {
 	req, err := c.newRequest("GET", fmt.Sprintf("/api/v2/trades?%s", c.params.Encode()), nil)
+
 	if err != nil {
-		return []Trade{}, err
+		return nil, err
 	}
+
 	var response []Trade
 	if _, err = c.do(req, &response); err != nil {
-		return []Trade{}, err
+		return nil, err
 	}
 
 	return response, nil

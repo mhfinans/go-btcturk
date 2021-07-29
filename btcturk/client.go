@@ -92,23 +92,30 @@ func (c *Client) do(r *http.Request, v interface{}) (*http.Response, error) {
 		return nil, err
 	}
 
+	data, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
 	defer func() {
-		_, err := io.Copy(ioutil.Discard, resp.Body)
-		if err != nil {
-			return
+		cerr := resp.Body.Close()
+		// Only overwrite the returned error if the original error was nil and an
+		// error occurred while closing the body.
+		if err == nil && cerr != nil {
+			err = cerr
 		}
-		err = resp.Body.Close()
-		if err != nil {
-			return
-		}
-		c.clearRequest()
 	}()
+
+	if resp.StatusCode >= 400 {
+		return nil, errors.New(resp.Status)
+	}
 
 	var response = &GeneralResponse{
 		Data: v,
 	}
 
-	if json.NewDecoder(resp.Body).Decode(response) != nil {
+	if err = json.Unmarshal(data, response); err != nil {
 		return nil, err
 	}
 

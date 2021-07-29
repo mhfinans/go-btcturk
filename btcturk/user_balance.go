@@ -12,16 +12,18 @@ type Balance struct {
 // Balance Returns User's Balance
 func (c *Client) Balance() ([]Balance, error) {
 	req, err := c.newRequest("GET", "/api/v1/users/balances", nil)
+
 	if err != nil {
-		return []Balance{}, err
+		return nil, err
 	}
+
 	if err := c.auth(req); err != nil {
-		return []Balance{}, err
+		return nil, err
 	}
 
 	var response []Balance
 	if _, err = c.do(req, &response); err != nil {
-		return []Balance{}, err
+		return nil, err
 	}
 
 	return response, nil

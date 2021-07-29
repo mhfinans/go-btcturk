@@ -20,16 +20,18 @@ type UserTransactions struct {
 // UserTransactions Example Params : ?type=buy&type=sell&symbol=btc&symbol=try&symbol=usdt
 func (c *Client) UserTransactions() ([]UserTransactions, error) {
 	req, err := c.newRequest("GET", fmt.Sprintf("/api/v1/users/transactions/trade?%s", c.params.Encode()), nil)
+
 	if err != nil {
-		return []UserTransactions{}, err
+		return nil, err
 	}
+
 	if err := c.auth(req); err != nil {
-		return []UserTransactions{}, err
+		return nil, err
 	}
 
 	var response []UserTransactions
 	if _, err = c.do(req, &response); err != nil {
-		return []UserTransactions{}, err
+		return nil, err
 	}
 
 	return response, nil
