@@ -29,7 +29,7 @@ const (
 	OrderStatusTypeUntouched       OrderStatusType = "Untouched"
 	OrderStatusTypePartiallyFilled OrderStatusType = "Partial"
 	OrderStatusTypeCancelled       OrderStatusType = "Canceled"
-	OrderStatusTypeFilled          OrderStatusType = "Filled"
+	OrderStatusTypeFilled          OrderStatusType = "Closed"
 
 	SideTypeBuy  SideType = "buy"
 	SideTypeSell SideType = "sell"
