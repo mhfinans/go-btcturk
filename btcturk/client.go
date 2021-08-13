@@ -108,7 +108,7 @@ func (c *Client) do(r *http.Request, v interface{}) (*http.Response, error) {
 	}()
 
 	if resp.StatusCode >= 400 {
-		return nil, errors.New(resp.Status)
+		return nil, errors.New(fmt.Sprintf("Status: %s, Response: %s", resp.Status, string(data)))
 	}
 
 	var response = &GeneralResponse{
