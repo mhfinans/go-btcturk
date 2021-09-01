@@ -74,12 +74,7 @@ func (c *Client) NewOrder(o *OrderInput) (*NewOrderResponse, error) {
 }
 
 func (c *Client) OpenOrders() (*OpenOrderResult, error) {
-	jsonString, err := json.Marshal(c.params)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := c.newRequest("GET", "/api/v1/openOrders", bytes.NewBuffer(jsonString))
+	req, err := c.newRequest("GET", fmt.Sprintf("/api/v1/openOrders?%s", c.params.Encode()), c.body)
 	if err != nil {
 		return nil, err
 	}
