@@ -127,7 +127,7 @@ func (c *Client) CancelOrder() (bool, error) {
 }
 
 func (c *Client) GetSingleOrder() (OrderResponse, error) {
-	req, err := c.newRequest("GET", fmt.Sprintf("/api/v1/order?%s", c.params.Encode()), c.body)
+	req, err := c.newRequest("GET", fmt.Sprintf("/api/v1/order/%s", c.params.Get("orderId")), c.body)
 
 	if err != nil {
 		return OrderResponse{}, err
